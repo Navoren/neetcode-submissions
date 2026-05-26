@@ -1,0 +1,39 @@
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> adj(numCourses);
+        vector<int> indegree(numCourses, 0);
+
+        for(auto &it : prerequisites){
+            int u = it[0];
+            int v = it[1];
+            adj[v].push_back(u);
+        }
+        for(int i=0; i<numCourses; i++){
+            for(auto it : adj[i]){
+                indegree[it]++;
+            }
+        }
+        queue<int> q;
+        for(int i=0; i<numCourses; i++){
+            if(indegree[i] == 0){
+                q.push(i);
+            }
+        }
+        vector<int> schedule;
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            schedule.push_back(node);
+
+            for(auto it : adj[node]){
+                indegree[it]--;
+                if(indegree[it] == 0) q.push(it);
+            }
+        }
+        if (schedule.size() == numCourses)
+            return schedule;
+
+        return {};
+    }
+};
